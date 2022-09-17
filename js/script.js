@@ -12,15 +12,53 @@
 
 5) Добавить нумерацию выведенных фильмов */
 
-'use strict';
+"use strict";
 
 const movieDB = {
-    movies: [
-        "Логан",
-        "Лига справедливости",
-        "Ла-ла лэнд",
-        "Одержимость",
-        "Скотт Пилигрим против..."
-    ]
+  movies: [
+    "Одержимость",
+    "Логан",
+    "Лига справедливости",
+    "Скотт Пилигрим против...",
+    "Ла-ла лэнд",
+  ],
 };
 
+const refs = {
+  promoBlock: document.querySelector(".promo__adv"),
+  general: document.querySelector(".promo__bg"),
+  generalGenre: document.querySelector(".promo__genre"),
+  movieList: document.querySelector(".promo__interactive-list"),
+};
+
+function start(
+  { promoBlock, general, generalGenre, movieList } = {},
+  obj = {}
+) {
+  promoBlock.innerHTML = "";
+  generalGenre.textContent = "драма";
+  general.style.background = "url(img/bg.jpg) center center/cover no-repeat";
+  const sortArr = sortFilmsByName(obj);
+  const markupString = getHtmlMarkup(sortArr);
+  createFilmList(markupString, movieList);
+}
+
+start(refs, movieDB);
+
+function sortFilmsByName({ movies } = {}) {
+  return [...movies].sort((a, b) => a.localeCompare(b));
+}
+
+function getHtmlMarkup(arr = []) {
+  return arr
+    .map((film, index) => {
+      return `<li class='promo__interactive-item'>${
+        index + 1
+      }) ${film}<div class='delete'><div><li>`;
+    })
+    .join("");
+}
+
+function createFilmList(string = "", obj = {}) {
+  obj.innerHTML = string;
+}
