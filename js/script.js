@@ -1,17 +1,3 @@
-/* Задания на урок:
-
-1) Удалить все рекламные блоки со страницы (правая часть сайта)
-
-2) Изменить жанр фильма, поменять "комедия" на "драма"
-
-3) Изменить задний фон постера с фильмом на изображение "bg.jpg". Оно лежит в папке img.
-Реализовать только при помощи JS
-
-4) Список фильмов на странице сформировать на основании данных из этого JS файла.
-Отсортировать их по алфавиту 
-
-5) Добавить нумерацию выведенных фильмов */
-
 "use strict";
 
 const movieDB = {
@@ -29,7 +15,39 @@ const refs = {
   general: document.querySelector(".promo__bg"),
   generalGenre: document.querySelector(".promo__genre"),
   movieList: document.querySelector(".promo__interactive-list"),
+  form: document.querySelector(".add"),
 };
+
+refs.form.addEventListener("submit", addFilmElem);
+refs.movieList.addEventListener("click", deleteFilm);
+
+function addFilmElem(event) {
+  event.preventDefault();
+  let filmName = "";
+  filmName = refs.form.input.value.trim();
+
+  if (filmName) {
+    if (filmName.length > 21) {
+      movieDB.movies.push(filmName.slice(0, 20) + "...");
+    } else {
+      movieDB.movies.push(filmName);
+    }
+    if (refs.form.checkbox.checked) {
+      console.log("Добавляем любимый фильм");
+    }
+  }
+  start(refs, movieDB);
+}
+
+function deleteFilm(event) {
+  if (event.target.classList.contains("delete")) {
+    const deleteValue = event.target
+      .closest(".promo__interactive-item")
+      .textContent.slice(3);
+    movieDB.movies.splice(movieDB.movies.indexOf(deleteValue), 1);
+    start(refs, movieDB);
+  }
+}
 
 function start(
   { promoBlock, general, generalGenre, movieList } = {},
@@ -42,7 +60,6 @@ function start(
   const markupString = getHtmlMarkup(sortArr);
   createFilmList(markupString, movieList);
 }
-
 start(refs, movieDB);
 
 function sortFilmsByName({ movies } = {}) {
